@@ -1,0 +1,28 @@
+#!/bin/bash
+
+export LD_LIBRARY_PATH="/usr/local/lib/"
+
+# Если нет аргументов выводим справку по использованию и прекращяем работу
+if [ -z "$1" ]
+then
+        echo 'webptopng http://site.ru/file.webp /root/filename.png'
+else
+        # Замена https на http
+        original_string=$1
+        string_to_replace=http
+        result_string="${original_string/https/$string_to_replace}"
+
+        # Скачиваем временный файл
+        wget $result_string -O webp.temp
+
+        # Если нет второго аргумента сохраняем результат в директории скрипта с имене$
+        if [ -z "$2" ]
+        then
+                dwebp webp.temp -o result.png
+        else
+                dwebp webp.temp -o $2
+        fi
+
+        # Удаляем временный файл
+        rm webp.temp
+fi
